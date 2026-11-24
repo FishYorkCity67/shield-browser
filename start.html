@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline' file:; img-src data:">
+<title>Neuer Tab</title>
+<style>
+  :root { --sky1:#ffe3ec; --sky2:#ffc9da; --sky3:#ffeede; --sun:#fff4d6; --far:#e9b8cc; --fuji:#7f7fa6; --fuji2:#9a96bd; --snow:#fff; --mist:#ffe9f0; --hill:#5b4a6e; --branch:#5a3b34; --bloom1:#ffc1d9; --bloom2:#ff9fc4; --txt:#5a3b4e; --acc:#ff7eb6; --ease:cubic-bezier(.22,1,.36,1); --spring:cubic-bezier(.34,1.56,.64,1); }
+  body.snow { --sky1:#0d1630; --sky2:#1d2c5a; --sky3:#3a4f86; --sun:#eaf2ff; --far:#33477a; --fuji:#2a3a6a; --fuji2:#3a4c82; --snow:#e8f1ff; --mist:#4a5f98; --hill:#10182f; --branch:#2b2a3a; --bloom1:#dbe9ff; --bloom2:#b7d3ff; --txt:#e8f1ff; --acc:#7cc4ff; }
+  body.leaves { --sky1:#ffd7a3; --sky2:#ff9f5e; --sky3:#ffdcae; --sun:#fff0c4; --far:#d9946a; --fuji:#7a5a6a; --fuji2:#95706f; --snow:#fff6ea; --mist:#ffd9b0; --hill:#5a3322; --branch:#4a2c1f; --bloom1:#e8742a; --bloom2:#d9a21b; --txt:#4a2c1f; --acc:#ff9a3c; }
+  body.off { --sky1:#f3f4f2; --sky2:#e8ebe8; --sky3:#f3f4f2; --sun:#f3f4f2; --far:#dfe3df; --fuji:#c3cac5; --fuji2:#d0d6d2; --snow:#fff; --mist:#f3f4f2; --hill:#aab3ad; --branch:#8a928d; --bloom1:#cfd6d1; --bloom2:#bfc7c1; --txt:#3a423e; --acc:#2f7a55; }
+  * { box-sizing: border-box; }
+  html, body { margin:0; height:100%; overflow:hidden; font-family:"Segoe UI", system-ui, sans-serif; }
+  body { background:linear-gradient(180deg, var(--sky1) 0%, var(--sky2) 55%, var(--sky3) 100%); animation:skyIn 1.4s ease both; }
+  @keyframes skyIn { from { filter:brightness(.55) saturate(.8); } to { filter:none; } }
+  svg#scene { position:fixed; inset:0; width:100%; height:100%; }
+  .px { will-change:transform; }
+
+  /* Einblend-Choreografie der Landschaft */
+  .rise  { animation:rise 3s var(--ease) both; }
+  .fadeup { animation:fadeup 1.8s var(--ease) both; }
+  .d1 { animation-delay:.15s; } .d2 { animation-delay:.3s; } .d3 { animation-delay:.5s; }
+  .inL { animation:inL 2.2s var(--ease) .35s both; }
+  .inR { animation:inR 2.2s var(--ease) .45s both; }
+  @keyframes rise   { from { transform:translateY(170px); opacity:0; } to { transform:none; opacity:1; } }
+  @keyframes fadeup { from { transform:translateY(40px); opacity:0; } to { transform:none; opacity:1; } }
+  @keyframes inL { from { transform:translate(-120px,-70px) rotate(-3deg); opacity:0; } to { transform:none; opacity:1; } }
+  @keyframes inR { from { transform:translate(120px,-70px) rotate(3deg); opacity:0; } to { transform:none; opacity:1; } }
+
+  /* Dauerhafte, sanfte Bewegung */
+  #L { transform-origin:-20px 70px; animation:swayL 9s ease-in-out infinite alternate; }
+  #R { transform-origin:1620px 40px; animation:swayR 11s ease-in-out -4s infinite alternate; }
+  @keyframes swayL { from { transform:rotate(-.7deg); } to { transform:rotate(.9deg); } }
+  @keyframes swayR { from { transform:rotate(.8deg); } to { transform:rotate(-.8deg); } }
+  .cloud { animation:drift linear infinite; }
+  @keyframes drift { from { transform:translateX(-420px); } to { transform:translateX(2100px); } }
+  #sunhalo { transform-origin:1130px 430px; animation:breathe 7s ease-in-out infinite alternate; }
+  @keyframes breathe { from { transform:scale(.96); opacity:.85; } to { transform:scale(1.06); opacity:1; } }
+  .fuji-hat { animation:hatDrift 28s ease-in-out infinite alternate; }
+  @keyframes hatDrift { from { transform:translateX(-16px); } to { transform:translateX(22px); } }
+  #stars circle { animation:twinkle 3.5s ease-in-out infinite; }
+  @keyframes twinkle { 0%, 100% { opacity:.25; } 50% { opacity:1; } }
+
+  #box { position:fixed; left:50%; top:18vh; transform:translateX(-50%); width:min(560px, 86vw); text-align:center; color:var(--txt); }
+  h1 { margin:0 0 6px; font:400 46px Georgia, 'Palatino Linotype', serif; letter-spacing:.42em; text-indent:.42em; color:#fff; text-shadow:0 2px 18px rgba(60,20,50,.55); animation:titleIn 1.8s var(--ease) .5s both; }
+  @keyframes titleIn { from { opacity:0; letter-spacing:.95em; text-indent:.95em; filter:blur(10px); } to { opacity:1; letter-spacing:.42em; text-indent:.42em; filter:blur(0); } }
+  .tag { margin:0 0 22px; font:italic 15px Georgia, serif; letter-spacing:.12em; color:#fff; text-shadow:0 1px 10px rgba(60,20,50,.6); animation:tagIn 1.4s var(--ease) 1.1s both; }
+  @keyframes tagIn { from { opacity:0; transform:translateY(10px); } to { opacity:.88; transform:none; } }
+  /* Liquid Glass: durchscheinend, heller Rand der um die Flaeche herum wechselt, glaenzender Knopf */
+  form { position:relative; display:flex; align-items:center; height:58px; padding:6px; border-radius:30px; background:linear-gradient(162deg, rgba(255,255,255,.34), rgba(255,255,255,.08) 50%, rgba(255,255,255,.18)), rgba(58,24,66,.46); backdrop-filter:blur(18px) saturate(1.8) brightness(1.05); -webkit-backdrop-filter:blur(18px) saturate(1.8) brightness(1.05); box-shadow:inset 0 1px 0 rgba(255,255,255,.62), inset 0 -1px 0 rgba(255,255,255,.12), 0 18px 46px rgba(70,20,80,.32), 0 2px 8px rgba(70,20,80,.2); animation:formIn 1.2s var(--ease) 1.25s both; transition:transform .55s var(--spring), box-shadow .5s; }
+  form::after { content:""; position:absolute; inset:0; border-radius:inherit; padding:1px; pointer-events:none; background:conic-gradient(from 0deg at 50% 50%, rgba(255,255,255,.4) 0deg, rgba(255,255,255,.12) 45deg, rgba(255,255,255,.08) 90deg, rgba(255,255,255,.55) 132deg, rgba(255,255,255,.18) 180deg, rgba(255,255,255,.1) 240deg, rgba(255,255,255,.55) 292deg, rgba(255,255,255,.9) 322deg, rgba(255,255,255,.4) 360deg); -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); mask-composite:exclude; }
+  form:focus-within { transform:scale(1.03); box-shadow:inset 0 1px 0 rgba(255,255,255,.75), inset 0 -1px 0 rgba(255,255,255,.14), 0 0 0 5px rgba(255,255,255,.16), 0 24px 60px rgba(70,20,80,.4); }
+  @keyframes formIn { from { opacity:0; transform:translateY(28px) scale(.97); } to { opacity:1; transform:none; } }
+  input { flex:1; min-width:0; border:0; outline:0; padding:0 20px; background:none; font:inherit; font-size:16px; color:#fff; text-shadow:0 1px 8px rgba(50,16,60,.45); }
+  input::placeholder { color:rgba(255,255,255,.74); }
+  button { flex:none; width:46px; height:46px; border:0; border-radius:50%; background:linear-gradient(180deg, rgba(255,255,255,.55) 0%, rgba(255,255,255,0) 48%), linear-gradient(180deg, #f3d9a0, #d4a95f); color:#2a1a06; font-size:19px; cursor:pointer; box-shadow:inset 0 1px 0 rgba(255,255,255,.85), inset 0 -2px 6px rgba(120,70,10,.28), 0 6px 16px rgba(150,100,40,.38); transition:transform .4s var(--spring), filter .2s; }
+  button:hover { transform:scale(1.09); filter:brightness(1.05) saturate(1.1); }
+  button:active { transform:scale(.93); }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration:.01ms !important; animation-delay:0s !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; }
+  }
+</style>
+</head>
+<body>
+<svg id="scene" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="glow"><stop offset="0" stop-color="var(--sun)" stop-opacity=".95"/><stop offset="1" stop-color="var(--sun)" stop-opacity="0"/></radialGradient>
+    <radialGradient id="puff"><stop offset="0" stop-color="#fff" stop-opacity=".55"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+    <linearGradient id="mist" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--mist)" stop-opacity="0"/><stop offset="1" stop-color="var(--mist)" stop-opacity=".95"/></linearGradient>
+    <linearGradient id="fujig" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--fuji2)"/><stop offset="1" stop-color="var(--fuji)"/></linearGradient>
+  </defs>
+  <g id="stars"></g>
+
+  <g class="px" data-d="6"><g class="rise">
+    <g id="sunhalo"><circle cx="1130" cy="430" r="260" fill="url(#glow)"/></g>
+    <circle cx="1130" cy="430" r="78" fill="var(--sun)"/>
+  </g></g>
+
+  <g class="px" data-d="9"><g class="fadeup d1">
+    <path id="far1" fill="var(--far)" opacity=".42"/>
+    <path id="far2" fill="var(--far)" opacity=".62"/>
+  </g></g>
+
+  <g class="px" data-d="11">
+    <g class="cloud" style="animation-duration:120s;animation-delay:-30s"><ellipse cx="0" cy="250" rx="190" ry="34" fill="url(#puff)"/><ellipse cx="90" cy="232" rx="120" ry="28" fill="url(#puff)"/></g>
+    <g class="cloud" style="animation-duration:170s;animation-delay:-110s"><ellipse cx="0" cy="340" rx="230" ry="38" fill="url(#puff)"/><ellipse cx="-110" cy="326" rx="140" ry="30" fill="url(#puff)"/></g>
+    <g class="cloud" style="animation-duration:95s;animation-delay:-60s"><ellipse cx="0" cy="170" rx="150" ry="26" fill="url(#puff)"/></g>
+  </g>
+
+  <g class="px" data-d="15"><g class="fadeup d2" id="fujiG"></g></g>
+
+  <g class="px" data-d="12"><g class="fadeup d3">
+    <path id="foot" fill="var(--hill)" opacity=".5"/>
+    <path d="M-100 790 C300 740 600 800 900 770 C1200 740 1450 790 1700 760 L1700 1000 L-100 1000Z" fill="url(#mist)"/>
+  </g></g>
+
+  <g class="px" data-d="22"><g class="fadeup d3">
+    <path id="hill" fill="var(--hill)"/>
+  </g></g>
+
+  <g class="px" data-d="34"><g class="inL"><g id="L" fill="none" stroke="var(--branch)" stroke-linecap="round">
+    <path id="b1" d="M-20 70 C140 90 260 60 380 150 C450 205 520 190 600 250" stroke-width="9"/>
+    <path id="b1b" d="M200 85 C260 150 250 230 300 300" stroke-width="5"/>
+  </g></g></g>
+  <g class="px" data-d="34"><g class="inR"><g id="R" fill="none" stroke="var(--branch)" stroke-linecap="round">
+    <path id="b2" d="M1620 40 C1480 70 1380 40 1270 130 C1210 180 1130 170 1050 230" stroke-width="9"/>
+    <path id="b2b" d="M1400 70 C1350 140 1360 220 1320 290" stroke-width="5"/>
+  </g></g></g>
+</svg>
+
+<div id="box">
+  <h1>SHIELD</h1>
+  <p class="tag">Dein Reich im Netz</p>
+  <form id="f"><input id="q" placeholder="Im Web suchen" autofocus autocomplete="off" spellcheck="false"><button>&#8594;</button></form>
+</div>
+
+<script src="fuji.js"></script>
+<script>
+  const fx = new URLSearchParams(location.search).get('fx') || 'sakura';
+  document.body.className = fx;
+
+  // Mount Fuji und Huegel aus dem gemeinsamen Modul (fuji.js): Umriss wie der echte Berg
+  (function () {
+    const F = window.ShieldFuji, $ = id => document.getElementById(id);
+    if (!F) return;
+    $('far1').setAttribute('d', F.range({ x0: -100, x1: 1700, y: 700, amp: 150, seed: 4, step: 100 }));
+    $('far2').setAttribute('d', F.range({ x0: -100, x1: 1700, y: 760, amp: 90, seed: 9, step: 70 }));
+    $('fujiG').innerHTML = F.render({ cx: 800, baseY: 900, H: 520, L: 500, light: 1, id: 'fj' });
+    $('foot').setAttribute('d', F.ridge({ x0: -100, x1: 1700, y: 800, amp: 34, wl: 210, seed: 2, bottom: 1000 }));
+    $('hill').setAttribute('d', F.ridge({ x0: -100, x1: 1700, y: 852, amp: 28, wl: 300, seed: 7, bottom: 1000 }));
+  })();
+
+  // Kirschbluete: der Himmel folgt der Tageszeit (Morgenrot, Tag, Daemmerung, Nacht mit Sternen)
+  const hour = new Date().getHours();
+  const phase = hour < 5 || hour >= 21 ? 'night' : hour < 8 ? 'dawn' : hour < 17 ? 'day' : 'dusk';
+  const GREET = { night: 'Gute Nacht', dawn: 'Guten Morgen', day: 'Guten Tag', dusk: 'Guten Abend' }[phase];
+  document.querySelector('.tag').textContent = (fx === 'sakura' ? GREET + ' – ' : '') + 'Dein Reich im Netz';
+  if (fx === 'sakura' && phase !== 'day') {
+    const P = {
+      dawn: { '--sky1': '#ffd9c9', '--sky2': '#ffb1ad', '--sky3': '#ffe9d0', '--sun': '#fff1c9', '--far': '#e0a3b5', '--fuji': '#8a7fa6', '--fuji2': '#a69bc4', '--snow': '#ffffff', '--mist': '#ffe0d6', '--hill': '#5a4262', '--branch': '#4a2f2c' },
+      dusk: { '--sky1': '#3b2a5c', '--sky2': '#b5497a', '--sky3': '#ffb48a', '--sun': '#ffd9a8', '--far': '#7a3f78', '--fuji': '#3a2a58', '--fuji2': '#5a3d78', '--snow': '#f0d6e6', '--mist': '#e89aa0', '--hill': '#2a1838', '--branch': '#3a2430' },
+      night: { '--sky1': '#070b1f', '--sky2': '#1a1a4a', '--sky3': '#3a2a6a', '--sun': '#f4f1ff', '--far': '#241f4e', '--fuji': '#151a3c', '--fuji2': '#212a55', '--snow': '#cfd8ff', '--mist': '#3a3a78', '--hill': '#0a0d24', '--branch': '#1c1a2c' }
+    }[phase];
+    for (const k in P) document.body.style.setProperty(k, P[k]);
+  }
+  const NS = 'http://www.w3.org/2000/svg';
+  let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+
+  // Bluetenzweige entlang der Aeste verteilen (links und rechts in je einer Gruppe, damit sie sanft schwingen)
+  for (const [id, group] of [['b1', 'L'], ['b1b', 'L'], ['b2', 'R'], ['b2b', 'R']]) {
+    const target = document.getElementById(group);
+    const p = document.getElementById(id), len = p.getTotalLength();
+    for (let d = 40; d < len; d += 22) {
+      const pt = p.getPointAtLength(d);
+      const n = 1 + (rnd() * 2 | 0);
+      for (let k = 0; k < n; k++) {
+        const g = document.createElementNS(NS, 'g');
+        const x = pt.x + (rnd() - .5) * 60, y = pt.y + (rnd() - .5) * 60, s = 7 + rnd() * 8;
+        g.setAttribute('transform', `translate(${x} ${y}) rotate(${rnd() * 360})`);
+        const col = rnd() < .5 ? 'var(--bloom1)' : 'var(--bloom2)';
+        if (fx === 'sakura' || fx === 'off') {
+          for (let i = 0; i < 5; i++) {
+            const e = document.createElementNS(NS, 'ellipse');
+            e.setAttribute('cx', 0); e.setAttribute('cy', -s * .7); e.setAttribute('rx', s * .5); e.setAttribute('ry', s * .75);
+            e.setAttribute('transform', `rotate(${i * 72})`); e.setAttribute('fill', col); e.setAttribute('opacity', .92);
+            g.appendChild(e);
+          }
+          const c = document.createElementNS(NS, 'circle'); c.setAttribute('r', s * .22); c.setAttribute('fill', '#fff3a8'); g.appendChild(c);
+        } else {
+          const e = document.createElementNS(NS, 'ellipse');   // Laub bzw. Schneebueschel
+          e.setAttribute('rx', s * (fx === 'snow' ? .8 : 1)); e.setAttribute('ry', s * (fx === 'snow' ? .8 : .55)); e.setAttribute('fill', col); e.setAttribute('opacity', .9);
+          g.appendChild(e);
+        }
+        target.appendChild(g);
+      }
+    }
+  }
+  if (fx === 'snow' || (fx === 'sakura' && phase === 'night')) {
+    const st = document.getElementById('stars');
+    for (let i = 0; i < 90; i++) {
+      const c = document.createElementNS(NS, 'circle');
+      c.setAttribute('cx', rnd() * 1600); c.setAttribute('cy', rnd() * 520); c.setAttribute('r', .6 + rnd() * 1.6);
+      c.setAttribute('fill', '#fff'); c.style.animationDelay = (-rnd() * 3.5) + 's'; c.style.animationDuration = (2.5 + rnd() * 3) + 's';
+      st.appendChild(c);
+    }
+  }
+
+  // Sanfter Parallax: die Ebenen folgen der Maus mit unterschiedlicher Staerke
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const layers = [...document.querySelectorAll('.px')].map(g => ({ g, d: +g.dataset.d }));
+    let tx = 0, ty = 0, cx = 0, cy = 0;
+    addEventListener('mousemove', e => { tx = e.clientX / innerWidth - .5; ty = e.clientY / innerHeight - .5; });
+    const tick = () => {
+      cx += (tx - cx) * .06; cy += (ty - cy) * .06;
+      if (Math.abs(tx - cx) > .0004 || Math.abs(ty - cy) > .0004) {
+        for (const { g, d } of layers) g.style.transform = `translate(${(-cx * d).toFixed(2)}px, ${(-cy * d * .6).toFixed(2)}px)`;
+      }
+      requestAnimationFrame(tick);
+    };
+    tick();
+  }
+
+  document.getElementById('f').onsubmit = e => {
+    e.preventDefault();
+    const v = document.getElementById('q').value.trim();
+    if (!v) return;
+    location.href = /^[\w-]+(\.[\w-]+)+(\/.*)?$/.test(v) ? 'https://' + v : 'https://duckduckgo.com/?q=' + encodeURIComponent(v);
+  };
+</script>
+</body>
+</html>

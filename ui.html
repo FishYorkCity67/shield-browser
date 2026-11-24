@@ -1,0 +1,117 @@
+﻿<!doctype html>
+<html lang="de" data-fx="sakura" data-mode="normal">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self' 'unsafe-inline' file:; script-src 'self' file:; img-src data: file:">
+<title>Shield</title>
+<link rel="stylesheet" href="ui/ui.css">
+</head>
+<body class="pre">
+
+<!-- Szene: Daemmerung ueber dem Fuji, dahinter alles andere -->
+<div id="scene" aria-hidden="true">
+  <svg viewBox="0 0 1600 900" preserveAspectRatio="xMinYMax slice" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <radialGradient id="sung"><stop offset="0" stop-color="var(--s-sun)" stop-opacity=".55"/><stop offset="1" stop-color="var(--s-sun)" stop-opacity="0"/></radialGradient>
+      <radialGradient id="puff"><stop offset="0" stop-color="#fff" stop-opacity=".22"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+      <linearGradient id="mistg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--sc3)" stop-opacity="0"/><stop offset="1" stop-color="var(--sc3)" stop-opacity=".85"/></linearGradient>
+      <pattern id="haz" width="28" height="28" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="14" height="28" fill="#ffb02e"/><rect x="14" width="14" height="28" fill="#0b1015"/></pattern>
+    </defs>
+    <circle cx="150" cy="150" r="260" fill="url(#sung)"/>
+    <circle class="sun" cx="150" cy="150" r="30"/>
+    <path id="sfar1" class="far" opacity=".4"/>
+    <path id="sfar2" class="far" opacity=".62"/>
+    <g class="cloud" style="animation-duration:150s;animation-delay:-40s"><ellipse cx="0" cy="260" rx="230" ry="34" fill="url(#puff)"/><ellipse cx="120" cy="244" rx="150" ry="26" fill="url(#puff)"/></g>
+    <g class="cloud" style="animation-duration:210s;animation-delay:-150s"><ellipse cx="0" cy="360" rx="260" ry="38" fill="url(#puff)"/></g>
+    <g id="sfuji"></g>
+    <path id="sfoot" class="hill" opacity=".5"/>
+    <rect class="haze" x="-100" y="700" width="1900" height="220" fill="url(#mistg)"/>
+    <path id="shill" class="hill"/>
+    <rect class="hazard" x="-100" y="868" width="1900" height="32" fill="url(#haz)" opacity=".9"/>
+  </svg>
+  <div id="grain"></div>
+  <canvas id="petals"></canvas>
+</div>
+
+<!-- Eroeffnung -->
+<div id="splash"><div class="mark"><svg viewBox="0 0 24 24"><path d="M12 2.5l8 3v6c0 5-3.4 8.6-8 10-4.6-1.4-8-5-8-10v-6z"/><path d="M6.5 15.5l4-6 1.5 2 1.5-2 4 6"/></svg><div class="word">SHIELD</div></div></div>
+
+<!-- Kopfleiste -->
+<header id="top" class="rise" style="--d:0">
+  <div id="banner"><div class="stripe"></div><b>ISOLIERTER MODUS</b><span id="bn-text">Getrennte Sitzung · wird beim Schließen vernichtet</span><span style="flex:1"></span><span id="bn-level"></span><span id="bn-stats"></span></div>
+  <div id="bar">
+    <div id="lead">
+      <button class="ib" id="sidebtn" data-ic="sidebar" title="Seitenleiste (Strg+B)" aria-label="Seitenleiste ein- oder ausblenden"></button>
+      <div id="brand"><svg viewBox="0 0 24 24"><path d="M12 2.5l8 3v6c0 5-3.4 8.6-8 10-4.6-1.4-8-5-8-10v-6z"/><path d="M6.5 15.5l4-6 1.5 2 1.5-2 4 6" stroke-width="1.2"/></svg><span>SHIELD</span></div>
+    </div>
+    <div id="nav">
+      <button class="ib" id="back" data-ic="back" title="Zurück (Alt+Links)" aria-label="Zurück"></button>
+      <button class="ib" id="fwd" data-ic="forward" title="Vor (Alt+Rechts)" aria-label="Vor"></button>
+      <button class="ib" id="reload" data-ic="reload" title="Neu laden (Strg+R)" aria-label="Neu laden"></button>
+    </div>
+    <button id="omni" title="Suchen, Adresse eingeben oder Befehl (Strg+K)" aria-label="Adressleiste">
+      <svg class="i lock none" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+      <span class="url ph">Suchen oder Adresse eingeben</span><kbd>Strg K</kbd>
+    </button>
+    <div id="tools">
+      <button class="ib only-normal" id="fxbtn" title="Animation auf dieser Seite" disabled aria-label="Animation auf dieser Seite"><span data-ic="flower"></span><span class="lbl"></span></button>
+      <button class="ib star only-normal" id="star" data-ic="star" title="Lesezeichen (Strg+D)" aria-label="Lesezeichen"></button>
+      <button class="ib ai-btn only-normal" id="ai" title="KI-Assistent (Strg+J)"><span data-ic="spark"></span>KI</button>
+      <button class="ib" id="menu" data-ic="gear" title="Einstellungen" aria-label="Einstellungen"></button>
+    </div>
+    <div id="load"></div>
+  </div>
+</header>
+
+<!-- Seitenleiste -->
+<aside id="side" class="rise" style="--d:2">
+  <button id="newtab" title="Neuer Tab (Strg+T)" aria-label="Neuer Tab"><span class="plus" data-ic="plus"></span><span class="lbl">Neuer Tab</span><kbd>Strg T</kbd></button>
+  <div class="sechead only-normal" id="favhead">Favoriten</div>
+  <div id="favs" class="only-normal"></div>
+  <div class="sechead">Tabs</div>
+  <div id="tabs"></div>
+  <div id="sidefoot">
+    <button class="ib only-normal" id="isobtn" data-ic="shieldlock" title="Isolierter Modus (Strg+Umschalt+N)" aria-label="Isolierter Modus starten"></button>
+    <button class="ib only-sandbox" id="wipebtn" data-ic="trash" title="Alle Spuren jetzt vernichten" aria-label="Spuren vernichten"></button>
+    <span class="grow"></span>
+    <button class="ib" id="sfset" data-ic="gear" title="Einstellungen" aria-label="Einstellungen"></button>
+  </div>
+</aside>
+
+<!-- Rahmen der Seitenkarte (die echte Seite liegt als eigene Ansicht darueber) -->
+<div id="stage"></div>
+
+<!-- Rechte Karte -->
+<section id="panel" aria-label="Seitenleiste rechts">
+  <div id="ptabs"></div>
+  <div class="pane on" id="p-chat">
+    <div id="msgs"></div>
+    <div id="status"></div>
+    <div id="chatbar">
+      <div class="opts" id="modes"></div>
+      <div id="chatrow"><textarea id="q" placeholder="Frag etwas oder gib einen Befehl ..."></textarea><button id="send">Senden</button></div>
+    </div>
+  </div>
+  <div class="pane" id="p-notes"><div class="scroll st" id="notes"></div></div>
+  <div class="pane" id="p-menu"><div class="scroll st" id="menupane"></div></div>
+  <div class="pane" id="p-shield"><div class="scroll st" id="shieldpane"></div></div>
+</section>
+
+<!-- Befehlspalette und Dialoge -->
+<div id="overlay">
+  <div id="snapbox"><img id="snapimg" alt=""></div>
+  <div id="veil"></div>
+  <div id="palette">
+    <div class="pin"><span data-ic="search"></span><input id="pq" placeholder="Suche, Adresse oder Befehl ..." spellcheck="false" autocomplete="off"></div>
+    <div id="plist"></div>
+    <div class="phint"><span>↑↓ wählen</span><span>↵ öffnen</span><span>Esc schließen</span></div>
+  </div>
+  <div id="modal"></div>
+</div>
+<div id="toasts"></div>
+
+<script src="fuji.js"></script>
+<script src="ui/core.js"></script>
+<script src="ui/panel.js"></script>
+</body>
+</html>

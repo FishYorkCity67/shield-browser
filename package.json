@@ -1,0 +1,14 @@
+{
+  "name": "shieldbrowser",
+  "version": "0.1.0",
+  "description": "Schlichter Browser mit Werbe- und Trackerblocker",
+  "license": "MIT",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "devDependencies": {
+    "@electron/packager": "^20.3.0",
+    "electron": "^44.9.0"
+  }
+}

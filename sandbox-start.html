@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data:; form-action https://html.duckduckgo.com">
+<title>Isolierter Start</title>
+<style>
+  :root { --bg0: #05080b; --bg1: #0b1217; --bg2: #14202a; --amber: #ffb02e; --red: #ff5a4d; --text: #e7eef2; --muted: #8fa3b0; --line: rgba(255,255,255,.09); --ease: cubic-bezier(.22,1,.36,1); }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body { color: var(--text); font: 14px/1.5 "Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif; overflow: auto;
+    background: radial-gradient(1200px 600px at 50% -10%, #17232d 0%, transparent 60%), linear-gradient(180deg, var(--bg1), var(--bg0)); }
+  /* feines Raster */
+  body::before { content: ""; position: fixed; inset: 0; pointer-events: none; opacity: .5;
+    background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px); background-size: 46px 46px;
+    mask-image: radial-gradient(ellipse at 50% 30%, #000 0%, transparent 70%); -webkit-mask-image: radial-gradient(ellipse at 50% 30%, #000 0%, transparent 70%); }
+  main { position: relative; max-width: 880px; margin: 0 auto; padding: 7vh 24px 48px; text-align: center; }
+  .emblem { position: relative; width: 132px; height: 132px; margin: 0 auto 18px; animation: up 1s var(--ease) both; }
+  .emblem svg { width: 100%; height: 100%; fill: none; stroke: var(--amber); stroke-width: 1.4; stroke-linejoin: round; stroke-linecap: round; }
+  .emblem .scan { position: absolute; left: 14%; right: 14%; height: 2px; top: 18%; background: linear-gradient(90deg, transparent, var(--amber), transparent); opacity: .8; animation: scan 3.4s ease-in-out infinite; }
+  @keyframes scan { 0%, 100% { top: 22%; opacity: 0; } 15% { opacity: .9; } 50% { top: 70%; opacity: .9; } 85% { opacity: 0; } }
+  @keyframes up { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+  h1 { margin: 0; font: 400 38px Georgia, "Palatino Linotype", serif; letter-spacing: .32em; text-indent: .32em; animation: up 1s var(--ease) .1s both; }
+  h1 b { color: var(--amber); font-weight: 400; }
+  .sub { margin: 8px 0 0; color: var(--muted); letter-spacing: .06em; animation: up 1s var(--ease) .2s both; }
+  .badge { display: inline-block; margin-top: 12px; padding: 3px 14px; border: 1px solid rgba(255,176,46,.45); border-radius: 999px; color: var(--amber); font-size: 12px; letter-spacing: .12em; text-transform: uppercase; animation: up 1s var(--ease) .28s both; }
+  form { display: flex; height: 54px; margin: 30px auto 0; max-width: 620px; border-radius: 27px; overflow: hidden; background: rgba(8,13,18,.85); border: 1px solid rgba(255,176,46,.5); box-shadow: 0 16px 50px rgba(0,0,0,.5); animation: up 1s var(--ease) .35s both; transition: border-color .3s, transform .4s var(--ease); }
+  form:focus-within { border-color: var(--amber); transform: scale(1.02); }
+  input { flex: 1; border: 0; outline: 0; background: none; color: var(--text); font: inherit; font-size: 16px; padding: 0 22px; }
+  input::placeholder { color: var(--muted); }
+  button { width: 72px; border: 0; background: var(--amber); color: #1a1208; font-size: 19px; cursor: pointer; transition: filter .2s; }
+  button:hover { filter: brightness(1.1); }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 38px 0 0; text-align: left; }
+  .card { padding: 14px 16px; border-radius: 14px; border: 1px solid var(--line); background: rgba(255,255,255,.03); animation: up .9s var(--ease) both; }
+  .card:nth-child(1) { animation-delay: .45s } .card:nth-child(2) { animation-delay: .5s } .card:nth-child(3) { animation-delay: .55s } .card:nth-child(4) { animation-delay: .6s } .card:nth-child(5) { animation-delay: .65s } .card:nth-child(6) { animation-delay: .7s }
+  .card b { display: flex; align-items: center; gap: 9px; font-weight: 600; }
+  .card b i { width: 18px; height: 18px; border-radius: 50%; background: rgba(143,214,168,.16); border: 1.5px solid #8fd6a8; position: relative; flex: none; }
+  .card b i::after { content: ""; position: absolute; left: 5px; top: 2px; width: 4px; height: 8px; border: solid #8fd6a8; border-width: 0 2px 2px 0; transform: rotate(40deg); }
+  .card small { display: block; margin-top: 4px; color: var(--muted); line-height: 1.45; }
+  .warn { margin: 26px auto 0; max-width: 700px; padding: 14px 18px; border-radius: 14px; border: 1px solid rgba(255,176,46,.35); background: rgba(255,176,46,.07); text-align: left; line-height: 1.6; animation: up 1s var(--ease) .8s both; }
+  .warn b { color: var(--amber); }
+  @media (max-width: 720px) { .grid { grid-template-columns: 1fr 1fr; } }
+  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; animation-delay: 0s !important; } }
+</style>
+</head>
+<body>
+<main>
+  <div class="emblem">
+    <svg viewBox="0 0 24 24"><path d="M12 2.5l8 3v6c0 5-3.4 8.6-8 10-4.6-1.4-8-5-8-10v-6z"/><rect x="9" y="10.5" width="6" height="5.5" rx="1"/><path d="M10 10.5V9a2 2 0 0 1 4 0v1.5"/></svg>
+    <div class="scan"></div>
+  </div>
+  <h1><b>ISOLIERT</b></h1>
+  <p class="sub">Getrennte Sitzung · Wegwerf-Profil · kein Verlauf</p>
+  <span class="badge" id="lv">Schutzstufe aktiv</span>
+
+  <form method="get" action="https://html.duckduckgo.com/html/">
+    <input name="q" placeholder="Sicher suchen (DuckDuckGo, ohne Skripte)" autofocus autocomplete="off" spellcheck="false">
+    <button type="submit" aria-label="Suchen">&#8594;</button>
+  </form>
+
+  <div class="grid">
+    <div class="card"><b><i></i>Tracker gesperrt</b><small>Werbe- und Tracking-Server werden gar nicht erst kontaktiert.</small></div>
+    <div class="card"><b><i></i>Fingerabdruck-Schutz</b><small>Einheitliches Browserbild, Zeitzone UTC, Rauschen bei Canvas und Audio.</small></div>
+    <div class="card"><b><i></i>Nur HTTPS</b><small>Unverschlüsselte Adressen werden hochgestuft, Herkunft wird gekürzt.</small></div>
+    <div class="card"><b><i></i>Downloads gesperrt</b><small>Nichts landet auf deinem PC. Popups und Fremdprotokolle sind aus.</small></div>
+    <div class="card"><b><i></i>Kein Gerätezugriff</b><small>Kamera, Mikrofon, Standort und Benachrichtigungen werden verweigert.</small></div>
+    <div class="card"><b><i></i>Spuren verschwinden</b><small>Alles liegt nur im Arbeitsspeicher und wird beim Schließen vernichtet.</small></div>
+  </div>
+
+  <div class="warn"><b>Ehrlich gesagt:</b> Ohne Proxy, Tor oder VPN sieht jede Seite weiterhin deine IP-Adresse – das lässt sich im Schutz-Menü rechts einstellen. Dieser Modus ersetzt keinen Virenscanner. Gib hier keine echten Passwörter oder Zahlungsdaten ein und öffne keine heruntergeladenen Programme.</div>
+</main>
+<script>
+  const lv = new URLSearchParams(location.search).get('lv');
+  const names = { normal: 'Normal', strict: 'Streng', max: 'Maximal' };
+  if (names[lv]) document.getElementById('lv').textContent = 'Schutzstufe: ' + names[lv];
+</script>
+</body>
+</html>
